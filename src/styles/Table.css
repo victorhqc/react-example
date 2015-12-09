@@ -1,2 +1,19 @@
 .table-component {
 }
+
+.table-component input[type="text"] {
+    color: #333;
+}
+
+.table-component tr {
+    margin: 5px 0;
+}
+
+.table-component tr:nth-child(even) {
+    background-color: #ccc;
+    color: #333;
+}
+
+.table-component tr td {
+    margin: 0 3px;
+}

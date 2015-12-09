@@ -34,7 +34,7 @@ class RowComponent extends React.Component {
 class TableComponent extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {data: this.props.data};
+        this.state = {data: this.props.data, _data: this.props.data};
     }
 
     renderRows() {
@@ -48,21 +48,53 @@ class TableComponent extends React.Component {
 
     renderHeader() {
         const row = this.state.data[0];
+        if(!row) { return <tr></tr>; }
         return <RowComponent
             header={true}
             validColumns={this.props.validColumns} {...row} />
     }
 
+    componentWillUpdate(nextProps, nextState) {
+        if(nextProps.data === this.props.data) { return; }
+        this.setState({data: nextProps.data, _data: nextProps.data});
+    }
+
+    search(e) {
+        let dataArr = [];
+        const regExp = new RegExp(e.target.value, 'gi');
+        this.state._data.forEach((data) => {
+            let valid = false;
+            for(let k in data) {
+                if(this.props.validColumns.indexOf(k) < 0) { continue; }
+                if((typeof data[k] === 'string' || data[k] === 'number')  &&
+                data[k].match(regExp)) {
+                    valid = true; break;
+                }
+            }
+
+            if(valid) { dataArr.push(data); }
+        });
+
+        this.setState({data: dataArr});
+    }
+
     render() {
         return (
-            <table className="table-component">
-                <thead>
-                    {this.renderHeader()}
-                </thead>
-                <tbody>
-                    {this.renderRows()}
-                </tbody>
-            </table>
+            <div className="table-component">
+                <input
+                    ref="search"
+                    type="text"
+                    placeholder="Search..."
+                    onChange={ this.search.bind(this) }/>
+                <table>
+                    <thead>
+                        {this.renderHeader()}
+                    </thead>
+                    <tbody>
+                        {this.renderRows()}
+                    </tbody>
+                </table>
+            </div>
         );
     }
 }

@@ -1,7 +1,5 @@
-import config from '../config';
-require('expose?$!expose?jQuery!jquery');
-const $ = jQuery;
-
+import config from '../scripts/config';
+const $ = require('jquery');
 class BaseModel {
     constructor(options) {
         let baseOptions = { model: 'base', relations: [] };
