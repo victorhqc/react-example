@@ -40,6 +40,10 @@ module.exports = {
       }
     ],
     loaders: [
+        {
+        test: require.resolve("jquery/dist/jquery.min.js"),
+        loader: "imports?jQuery=jquery"
+    },
       {
         test: /\.css$/,
         loader: 'style!css'
