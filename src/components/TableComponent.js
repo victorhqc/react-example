@@ -66,9 +66,13 @@ class TableComponent extends React.Component {
             let valid = false;
             for(let k in data) {
                 if(this.props.validColumns.indexOf(k) < 0) { continue; }
-                if((typeof data[k] === 'string' || data[k] === 'number')  &&
-                data[k].match(regExp)) {
-                    valid = true; break;
+                if((typeof data[k] === 'string' || data[k] === 'number')) {
+                    if(typeof data[k] === 'number') {
+                        data[k] = data[k].toString();
+                    }
+                    if(data[k].match(regExp)) {
+                        valid = true; break;
+                    }
                 }
             }
 
