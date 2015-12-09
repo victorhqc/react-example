@@ -1,3 +1,7 @@
+import config from '../config';
+require('expose?$!expose?jQuery!jquery');
+const $ = jQuery;
+
 class BaseModel {
     constructor(options) {
         let baseOptions = { model: 'base', relations: [] };
@@ -8,17 +12,15 @@ class BaseModel {
         }
 
         this.config = config;
-        this.baseUrl = config.API.host + ':' + config.API.port;
-        this.url = '//' + this.baseUrl + '/' + config.API.version +
-        '/' + this.model;
-
+        this.url = '//' + config.API.host + ':' + config.API.port + '/' +
+                    config.API.version + '/' + this.model;
         this.configured = false;
         this.buildRelations();
         this.configureAjax();
     }
 
     baseCall(url, method, filter) {
-        var promise = new Promise(function(resolve, reject) {
+        var promise = new Promise((resolve, reject) => {
             var object = {
                 url: url,
                 dataType: 'json',
@@ -28,19 +30,13 @@ class BaseModel {
             if (method === 'GET' && filter) {
                 if(!$.isEmptyObject(filter) && filter && filter.filter) {
                     object.data = "filter="+ JSON.stringify(filter.filter);
-                }else {
-                    object.data = filter;
                 }
             } else if(filter) {
                 object.data = filter;
             }
 
-            object.oauth = {
-                scopes: {}
-            };
-
-            window.jso.ajax(object).done(resolve).fail(reject);
-        }.bind(this));
+            $.ajax(object).done(resolve).fail(reject);
+        });
 
         return promise;
     }
@@ -76,13 +72,13 @@ class BaseModel {
     }
 
     configureAjax() {
-        if(localStorage.getItem('token') && !this.configured) {
+        if(localStorage.getItem('token')) {
             this.configured = true;
             window.isLogged = true;
             $.ajaxSetup({
                 beforeSend: function beforeSend(xhr) {
                     xhr.setRequestHeader('Authorization',
-                    localStorage.getItem('token'));
+                    window.localStorage.getItem('token'));
                 }
             });
         } else {
